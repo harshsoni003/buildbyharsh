@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { AgentSelector } from "./AgentSelector";
 import { ChatInterface } from "./ChatInterface";
 import { ContextWindow } from "./ContextWindow";
@@ -6,13 +7,26 @@ import { SessionHistory } from "./SessionHistory";
 import { CoreThermals } from "./CoreThermals";
 import { SystemControls } from "./SystemControls";
 
-export function AgentSidebar() {
+interface AgentSidebarProps {
+  thermalMetrics: { label: string; value: string; percentage: number; color: string }[];
+}
+
+export function AgentSidebar({ thermalMetrics }: AgentSidebarProps) {
   return (
-    <aside className="w-[380px] h-screen flex flex-col bg-sidebar border-l border-border/50 overflow-hidden">
+    <motion.aside
+      initial={{ x: 50, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+      className="w-[400px] h-full flex flex-col glass-card overflow-hidden"
+    >
       {/* Header */}
-      <div className="p-4 border-b border-border/30">
+      <div className="p-5 border-b border-white/5">
         <div className="flex items-center gap-2 mb-4">
-          <div className="w-2 h-2 rounded-full bg-primary animate-pulse-glow" />
+          <motion.div
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="w-2 h-2 rounded-full bg-primary glow-blue"
+          />
           <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Active Identity
           </h2>
@@ -21,11 +35,11 @@ export function AgentSidebar() {
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-6">
+      <div className="flex-1 overflow-y-auto scrollbar-thin p-5 space-y-6">
         {/* Command Center */}
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-1.5 h-1.5 rounded-full bg-success" />
+            <div className="w-1.5 h-1.5 rounded-full bg-success status-online" />
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Command Center
             </h2>
@@ -33,23 +47,16 @@ export function AgentSidebar() {
           <ChatInterface />
         </div>
 
-        {/* Context Window */}
         <ContextWindow />
-
-        {/* Tool Belt */}
         <ToolBelt />
-
-        {/* Session History */}
         <SessionHistory />
-
-        {/* Core Thermals */}
-        <CoreThermals />
+        <CoreThermals metrics={thermalMetrics} />
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-border/30">
+      <div className="p-5 border-t border-white/5">
         <SystemControls />
       </div>
-    </aside>
+    </motion.aside>
   );
 }
